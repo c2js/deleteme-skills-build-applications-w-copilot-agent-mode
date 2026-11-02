@@ -30,13 +30,13 @@ OctoFit Tracker is a three-tier application for a school fitness program. The st
 
 Record your plan here before editing code.
 
-- Presentation tier decision:
-- Logic tier decision:
-- Data tier decision:
-- Activity tracking approach:
-- Team management approach:
-- Leaderboard approach:
-- Workout suggestions approach:
+- Presentation tier decision: Keep React components responsible for rendering and view state, with requests through the shared API client using relative `/api` paths by default. Preserve React Router and Bootstrap, and provide accessible loading, empty, success, and error states for each capability. Keep Vite on port `5173`.
+- Logic tier decision: Keep Express routes responsible for request validation, response shapes, and HTTP status codes, with business rules in services. Run the API on port `8000`, return deliberate 4xx responses for invalid input or missing resources, and do not add authentication in this exercise.
+- Data tier decision: Use Mongoose schemas to enforce required fields and preserve user/team references and the default empty team members array. Keep MongoDB on port `27017` and retain the passing, idempotent seed behavior without deleting unrelated records. Implement model validation first, then API behavior, then presentation, checking each tier's contracts before proceeding.
+- Activity tracking approach: Validate `userId`, `teamId`, `type`, and positive numeric `minutes` before creating a record. Check ID format and user/team existence before database writes so invalid references return 4xx rather than cast-error 500s. Compute positive points from minutes in the service, set `occurredAt` on creation, and return the persisted activity in create/list responses.
+- Team management approach: Validate the submitted name, mascot, and member IDs, return `400` for a missing name, and persist the supplied fields with an empty members array by default. Return the stored name, mascot, and member IDs in create/list responses.
+- Leaderboard approach: Aggregate activity points by team, resolve team names, sort totals highest first, and assign sequential 1-based ranks. Return entries containing `teamName`, `totalPoints`, and `rank`; keep score calculation out of React components.
+- Workout suggestions approach: Look up the user by email and return `404` when no user matches. Use recent activities and the user's fitness goal to prioritize matching workout focuses, and include a reason grounded in that user's goal or activity pattern. Request suggestions for a specific user through the shared frontend API client.
 
 ## Test plan
 
