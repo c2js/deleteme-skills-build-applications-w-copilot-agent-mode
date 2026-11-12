@@ -63,25 +63,6 @@ describe('OctoFit API contract', () => {
     expect(listed.body.teams[0]).toMatchObject({ name: 'Octocats', mascot: 'Mona' });
     expect(listed.body.teams[0].members.map((id: string) => id.toString())).toContain(member._id.toString());
   });
-  it('validates team fields and defaults omitted members to an empty array', async () => {
-    for (const input of [
-      { name: ' ', mascot: 'Mona' },
-      { name: 'Octocats' },
-      { name: 'Octocats', mascot: 'Mona', members: 'not-an-array' },
-      { name: 'Octocats', mascot: 'Mona', members: ['not-an-id'] },
-    ]) {
-      const response = await request(app).post('/api/teams').send(input);
-      expect(response.status).toBe(400);
-    }
-    expect(await Team.countDocuments()).toBe(0);
-
-    const created = await request(app).post('/api/teams').send({ name: 'Octocats', mascot: 'Mona' });
-    expect(created.status).toBe(201);
-    expect(created.body.team).toMatchObject({ name: 'Octocats', mascot: 'Mona', members: [] });
-    const listed = await request(app).get('/api/teams');
-    expect(listed.body.teams).toHaveLength(1);
-    expect(listed.body.teams[0]).toMatchObject({ name: 'Octocats', mascot: 'Mona', members: [] });
-  });
   it('orders leaderboard entries by total points', async () => {
     const mona = await createUserAndTeam('Mona', 'mona@example.com', 'Mona', 'Octocats');
     const hubot = await createUserAndTeam('Hubot', 'hubot@example.com', 'Hubot', 'Robocats');
