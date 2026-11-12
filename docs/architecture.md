@@ -38,7 +38,7 @@ Record your plan here before editing code.
 - Current API increment: Implement only team creation and listing, the first failing API contract; preserve the passing activity implementation and defer leaderboard and workout suggestions.
 - Leaderboard approach: Aggregate activity points by team, resolve team names, sort totals highest first, and assign sequential 1-based ranks. Return entries containing `teamName`, `totalPoints`, and `rank`; keep score calculation out of React components.
 - Workout suggestions approach: Look up the user by email and return `404` when no user matches. Use recent activities and the user's fitness goal to prioritize matching workout focuses, and include a reason grounded in that user's goal or activity pattern. Request suggestions for a specific user through the shared frontend API client.
-- Frontend implementation: Each capability renders its API list through `CapabilityCard`, which uses the shared `getJson` client and provides loading status text, an empty message, and an error alert. Workout suggestions use the URL-encoded seeded email `mona@example.com`; no authentication or user selection is introduced.
+- Frontend implementation: Each capability calls the shared `getJson` client directly in a module-level loader and passes that stable loader to `CapabilityCard`, which provides loading status text, an empty message, and an error alert. Workout suggestions use the URL-encoded seeded email `mona@example.com`; no authentication or user selection is introduced.
 
 ## Test plan
 
