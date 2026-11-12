@@ -38,6 +38,7 @@ Record your plan here before editing code.
 - Current API increment: Implement only team creation and listing, the first failing API contract; preserve the passing activity implementation and defer leaderboard and workout suggestions.
 - Leaderboard approach: Aggregate activity points by team, resolve team names, sort totals highest first, and assign sequential 1-based ranks. Return entries containing `teamName`, `totalPoints`, and `rank`; keep score calculation out of React components.
 - Workout suggestions approach: Look up the user by email and return `404` when no user matches. Use recent activities and the user's fitness goal to prioritize matching workout focuses, and include a reason grounded in that user's goal or activity pattern. Request suggestions for a specific user through the shared frontend API client.
+- Frontend implementation: Each capability renders its API list through `CapabilityCard`, which uses the shared `getJson` client and provides loading status text, an empty message, and an error alert. Workout suggestions use the URL-encoded seeded email `mona@example.com`; no authentication or user selection is introduced.
 
 ## Test plan
 
@@ -51,3 +52,4 @@ Record the commands you run and what each failure means.
 - Initial API run: `npm run test:api --prefix octofit-tracker/backend` passed activity tracking. Team creation failed first because the placeholder returned `501` instead of `400` for a missing name; leaderboard and workout suggestions also remain incomplete.
 - Team increment verification: `npm run test:api --prefix octofit-tracker/backend -- -t 'creates and lists valid activities|creates teams and exposes members|validates team fields'` passed all three selected tests, including malformed team input and default empty members. `npm run build --prefix octofit-tracker/backend` passed.
 - Next contract: `npm run test:api --prefix octofit-tracker/backend -- -t 'orders leaderboard entries by total points'`. The initial run returned an empty leaderboard instead of ranked team totals.
+- Frontend verification: `cd octofit-tracker/frontend && npm test -- tests/app.contract.test.tsx && npm run build` passed all 15 presentation contract tests, TypeScript checking, and the Vite production build. Before implementation, all 15 tests failed against placeholder cards.
