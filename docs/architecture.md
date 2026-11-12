@@ -35,6 +35,7 @@ Record your plan here before editing code.
 - Data tier decision: Use Mongoose schemas to enforce required fields and preserve user/team references and the default empty team members array. Keep MongoDB on port `27017` and retain the passing, idempotent seed behavior without deleting unrelated records. Implement model validation first, then API behavior, then presentation, checking each tier's contracts before proceeding.
 - Activity tracking approach: Validate `userId`, `teamId`, `type`, and positive numeric `minutes` before creating a record. Check ID format and user/team existence before database writes so invalid references return 4xx rather than cast-error 500s. Compute positive points from minutes in the service, set `occurredAt` on creation, and return the persisted activity in create/list responses.
 - Team management approach: Validate the submitted name, mascot, and member IDs, return `400` for a missing name, and persist the supplied fields with an empty members array by default. Return the stored name, mascot, and member IDs in create/list responses.
+- Current API increment: Implement only team creation and listing, the first failing API contract; preserve the passing activity implementation and defer leaderboard and workout suggestions.
 - Leaderboard approach: Aggregate activity points by team, resolve team names, sort totals highest first, and assign sequential 1-based ranks. Return entries containing `teamName`, `totalPoints`, and `rank`; keep score calculation out of React components.
 - Workout suggestions approach: Look up the user by email and return `404` when no user matches. Use recent activities and the user's fitness goal to prioritize matching workout focuses, and include a reason grounded in that user's goal or activity pattern. Request suggestions for a specific user through the shared frontend API client.
 
@@ -47,3 +48,6 @@ Record the commands you run and what each failure means.
 - Frontend command: `npm test --prefix octofit-tracker/frontend`
 - Backend build command: `npm run build --prefix octofit-tracker/backend`
 - Frontend build command: `npm run build --prefix octofit-tracker/frontend`
+- Initial API run: `npm run test:api --prefix octofit-tracker/backend` passed activity tracking. Team creation failed first because the placeholder returned `501` instead of `400` for a missing name; leaderboard and workout suggestions also remain incomplete.
+- Team increment verification: `npm run test:api --prefix octofit-tracker/backend -- -t 'creates and lists valid activities|creates teams and exposes members|validates team fields'` passed all three selected tests, including malformed team input and default empty members. `npm run build --prefix octofit-tracker/backend` passed.
+- Next contract: `npm run test:api --prefix octofit-tracker/backend -- -t 'orders leaderboard entries by total points'`. The initial run returned an empty leaderboard instead of ranked team totals.
